@@ -1,7 +1,7 @@
-package com.abrxu.upflow.models;
+package com.abrxu.upflow.models.user;
 
+import com.abrxu.upflow.models.department.Department;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,22 +30,24 @@ public class User {
     @Column(name = "txt_last_name")
     private String lastName;
 
-    @Email(message = "Please provide a valid email.")
-    @NotNull(message = "You must fill the email section.")
-    @NotBlank(message = "You must fill the email section.")
-    @Column(name = "txt_email")
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "id_department")
+    @NotNull(message = "You must select a department.")
+    private Department department;
+
+    @OneToOne(mappedBy = "user")
+    private UserCredentials credentials;
 
     @NotNull(message = "It occurred an error during the user creation. Please try again.")
+    @Column(name = "dt_created_at")
     private LocalDateTime createdAt;
-
-    private String password;
 
     @PrePersist
     private void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
+    @Column(name = "dt_updated_at")
     private LocalDateTime updatedAt;
 
     @PreUpdate
