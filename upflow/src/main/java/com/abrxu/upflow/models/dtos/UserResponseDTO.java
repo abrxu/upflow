@@ -1,17 +1,31 @@
 package com.abrxu.upflow.models.dtos;
 
-
-import lombok.Data;
+import com.abrxu.upflow.models.department.Department;
+import com.abrxu.upflow.models.user.User;
 
 import java.time.LocalDateTime;
 
-@Data
-public class UserResponseDTO {
+public record UserResponseDTO(
 
-        private Long id;
-        private String name;
-        private String lastName;
-        private String email;
-        private LocalDateTime createdAt;
+        Long id,
+        String username,
+        String name,
+        String lastName,
+        String email,
+        LocalDateTime createdAt,
+        Department department
+)
+{
+        public static UserResponseDTO from(User user) {
+                return new UserResponseDTO(
+                        user.getId(),
+                        user.getCredentials().getUsername(),
+                        user.getName(),
+                        user.getLastName(),
+                        user.getCredentials().getEmail(),
+                        user.getCreatedAt(),
+                        user.getDepartment()
+                );
+        }
 
 }
