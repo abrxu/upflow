@@ -4,23 +4,36 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
-@Data
-public class UserCreationDTO {
+public record UserCreationDTO(
+
+        @Size(min = 3, max = 24, message = "Your username must have more than 3 letters and less than 24.")
+        @NotNull(message = "You must fill the username section.")
+        @NotBlank(message = "You must fill the username section.")
+        String username,
 
         @Size(max = 80, message = "Your name can't have more than 80 letters.")
         @NotNull(message = "You must fill the name section.")
         @NotBlank(message = "You must fill the name section.")
-        private String name;
+        String name,
 
         @Size(max = 80, message = "Your last name can't have more than 80 letters.")
         @NotNull(message = "You must fill the last name section.")
         @NotBlank(message = "You must fill the last name section.")
-        private String lastName;
+        String lastName,
 
         @Email(message = "Please provide a valid email.")
         @NotNull(message = "You must fill the email section.")
         @NotBlank(message = "You must fill the email section.")
-        private String email;
-}
+        String email,
+
+        @Size(min = 8, max = 24, message = "Your password must have more than 8 letters and less than 24.")
+        @NotNull(message = "You must fill the password section.")
+        @NotBlank(message = "You must fill the password section.")
+        String password,
+
+        @NotNull(message = "You must select a department.")
+        Long departmentId
+
+)
+{}
