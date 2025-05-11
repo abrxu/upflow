@@ -23,14 +23,14 @@ public class Department {
     @Column(name = "txt_description")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_manager")
     private User manager;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private List<User> users;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private List<Feedback> feedbacks;
 
     @Column(name = "dt_created_at")

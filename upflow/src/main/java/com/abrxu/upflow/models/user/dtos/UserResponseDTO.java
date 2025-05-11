@@ -1,4 +1,4 @@
-package com.abrxu.upflow.models.dtos;
+package com.abrxu.upflow.models.user.dtos;
 
 import com.abrxu.upflow.models.department.Department;
 import com.abrxu.upflow.models.user.User;

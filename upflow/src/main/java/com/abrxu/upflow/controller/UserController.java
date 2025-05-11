@@ -1,8 +1,8 @@
 package com.abrxu.upflow.controller;
 
-import com.abrxu.upflow.models.dtos.UserCreationDTO;
-import com.abrxu.upflow.models.dtos.UserResponseDTO;
-import com.abrxu.upflow.models.dtos.UserUpdateDTO;
+import com.abrxu.upflow.models.user.dtos.UserCreationDTO;
+import com.abrxu.upflow.models.user.dtos.UserResponseDTO;
+import com.abrxu.upflow.models.user.dtos.UserUpdateDTO;
 import com.abrxu.upflow.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
