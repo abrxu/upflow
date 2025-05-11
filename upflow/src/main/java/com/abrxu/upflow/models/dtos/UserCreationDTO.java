@@ -32,7 +32,6 @@ public record UserCreationDTO(
         @NotBlank(message = "You must fill the password section.")
         String password,
 
-        @NotNull(message = "You must select a department.")
         Long departmentId
 
 )
