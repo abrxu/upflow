@@ -30,6 +30,7 @@ public class UserCredentials {
     @Column(name = "txt_email")
     private String email;
 
+    @Size(min = 8, max = 24, message = "Your password must have more than 8 letters and less than 24.")
     @Column(name = "txt_password")
     private String password;
 
