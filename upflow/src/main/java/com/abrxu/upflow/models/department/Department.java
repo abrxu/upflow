@@ -2,6 +2,7 @@ package com.abrxu.upflow.models.department;
 
 import com.abrxu.upflow.models.feedback.Feedback;
 import com.abrxu.upflow.models.user.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,6 +29,7 @@ public class Department {
     private User manager;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
+    @JsonManagedReference
     private List<User> users;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
