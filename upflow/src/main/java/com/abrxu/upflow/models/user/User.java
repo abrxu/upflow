@@ -38,6 +38,9 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserCredentials credentials;
 
+    @Column(name = "dt_last_feedback")
+    private LocalDateTime lastFeedback;
+
     @NotNull(message = "It occurred an error during the user creation. Please try again.")
     @Column(name = "dt_created_at")
     private LocalDateTime createdAt;
