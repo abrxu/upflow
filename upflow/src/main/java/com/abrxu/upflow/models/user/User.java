@@ -30,12 +30,12 @@ public class User {
     @Column(name = "txt_last_name")
     private String lastName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_department")
-    @NotNull(message = "You must select a department.")
     private Department department;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_credentials")
     private UserCredentials credentials;
 
     @Column(name = "dt_last_feedback")
