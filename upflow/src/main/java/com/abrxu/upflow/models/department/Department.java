@@ -1,6 +1,6 @@
 package com.abrxu.upflow.models.department;
 
-import com.abrxu.upflow.models.User;
+import com.abrxu.upflow.models.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 

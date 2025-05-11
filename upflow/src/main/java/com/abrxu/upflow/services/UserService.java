@@ -1,6 +1,6 @@
 package com.abrxu.upflow.services;
 
-import com.abrxu.upflow.models.User;
+import com.abrxu.upflow.models.user.User;
 import com.abrxu.upflow.models.dtos.UserCreationDTO;
 import com.abrxu.upflow.models.dtos.UserResponseDTO;
 import com.abrxu.upflow.models.dtos.UserUpdateDTO;
