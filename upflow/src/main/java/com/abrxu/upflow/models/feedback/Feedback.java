@@ -1,5 +1,6 @@
 package com.abrxu.upflow.models.feedback;
 
+import com.abrxu.upflow.models.department.Department;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,11 +27,16 @@ public class Feedback {
     @NotNull(message = "It occurred an error during the feedback creation. Please try again.")
     private LocalDateTime createdAt;
 
+    @ManyToOne
+    @JoinColumn(name = "id_department")
+    private Department department;
+
+    @Enumerated(EnumType.STRING)
+    private FeedbackType type;
+
     @PrePersist
     private void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    @Enumerated(EnumType.STRING)
-    private FeedbackType type;
 }

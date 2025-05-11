@@ -1,5 +1,6 @@
 package com.abrxu.upflow.models.department;
 
+import com.abrxu.upflow.models.feedback.Feedback;
 import com.abrxu.upflow.models.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Department {
 
     @OneToMany(mappedBy = "department")
     private List<User> users;
+
+    @OneToMany(mappedBy = "department")
+    private List<Feedback> feedbacks;
 
     @Column(name = "dt_created_at")
     private LocalDateTime createdAt;
