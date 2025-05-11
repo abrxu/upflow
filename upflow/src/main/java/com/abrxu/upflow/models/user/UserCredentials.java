@@ -37,8 +37,7 @@ public class UserCredentials {
     @Column(name = "dt_last_updated")
     private LocalDateTime lastUpdated;
 
-    @OneToOne
-    @JoinColumn(name = "id_user")
+    @OneToOne(mappedBy = "credentials")
     private User user;
 
     @PrePersist
