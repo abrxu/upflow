@@ -11,11 +11,9 @@ import java.util.List;
 public class UserService {
 
     final UserRepository userRepository;
-    final DepartmentService departmentService;
 
-    public UserService(UserRepository userRepository, DepartmentService departmentService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.departmentService = departmentService;
     }
 
     public List<User> findUsersByIds(List<Long> ids) {
