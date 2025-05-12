@@ -1,6 +1,6 @@
-package com.abrxu.upflow.repositories;
+package com.abrxu.upflow.user.repositories;
 
-import com.abrxu.upflow.models.user.UserCredentials;
+import com.abrxu.upflow.user.domain.UserCredentials;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

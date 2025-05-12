@@ -1,4 +1,4 @@
-package com.abrxu.upflow.models.department.dtos;
+package com.abrxu.upflow.department.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

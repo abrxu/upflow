@@ -1,4 +1,4 @@
-package com.abrxu.upflow.models.user;
+package com.abrxu.upflow.user.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

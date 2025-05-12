@@ -1,7 +1,7 @@
-package com.abrxu.upflow.models.department;
+package com.abrxu.upflow.department.domain;
 
-import com.abrxu.upflow.models.feedback.Feedback;
-import com.abrxu.upflow.models.user.User;
+import com.abrxu.upflow.feedback.domain.Feedback;
+import com.abrxu.upflow.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;

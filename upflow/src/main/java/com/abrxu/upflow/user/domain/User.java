@@ -1,6 +1,6 @@
-package com.abrxu.upflow.models.user;
+package com.abrxu.upflow.user.domain;
 
-import com.abrxu.upflow.models.department.Department;
+import com.abrxu.upflow.department.domain.Department;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

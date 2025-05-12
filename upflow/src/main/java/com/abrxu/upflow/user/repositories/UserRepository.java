@@ -1,6 +1,6 @@
-package com.abrxu.upflow.repositories;
+package com.abrxu.upflow.user.repositories;
 
-import com.abrxu.upflow.models.user.User;
+import com.abrxu.upflow.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

@@ -1,7 +1,7 @@
-package com.abrxu.upflow.models.user.dtos;
+package com.abrxu.upflow.user.dtos;
 
-import com.abrxu.upflow.models.department.Department;
-import com.abrxu.upflow.models.user.User;
+import com.abrxu.upflow.department.domain.Department;
+import com.abrxu.upflow.user.domain.User;
 
 import java.time.LocalDateTime;
 

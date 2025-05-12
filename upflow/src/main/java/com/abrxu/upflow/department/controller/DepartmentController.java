@@ -1,8 +1,9 @@
-package com.abrxu.upflow.controller;
+package com.abrxu.upflow.department.controller;
 
-import com.abrxu.upflow.models.department.Department;
-import com.abrxu.upflow.models.department.dtos.DepartmentCreationDTO;
-import com.abrxu.upflow.services.DepartmentService;
+import com.abrxu.upflow.department.domain.Department;
+import com.abrxu.upflow.department.dtos.DepartmentCreationDTO;
+import com.abrxu.upflow.department.services.DepartmentManagementService;
+import com.abrxu.upflow.department.services.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/department")
 public class DepartmentController {
 
+    private final DepartmentManagementService departmentManagementService;
     private final DepartmentService departmentService;
 
-    public DepartmentController(DepartmentService departmentService) {
+    public DepartmentController(DepartmentManagementService departmentManagementService, DepartmentService departmentService) {
+        this.departmentManagementService = departmentManagementService;
         this.departmentService = departmentService;
     }
 
     @PostMapping
     public ResponseEntity<Department> createDepartment(@Valid @RequestBody DepartmentCreationDTO dto) {
-        return new ResponseEntity<>(departmentService.createDepartment(dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(departmentManagementService.createDepartment(dto), HttpStatus.CREATED);
     }
 
     @GetMapping

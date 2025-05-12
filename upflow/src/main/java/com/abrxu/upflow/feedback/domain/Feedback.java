@@ -1,6 +1,6 @@
-package com.abrxu.upflow.models.feedback;
+package com.abrxu.upflow.feedback.domain;
 
-import com.abrxu.upflow.models.department.Department;
+import com.abrxu.upflow.department.domain.Department;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

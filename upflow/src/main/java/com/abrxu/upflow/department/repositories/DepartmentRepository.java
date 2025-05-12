@@ -1,6 +1,6 @@
-package com.abrxu.upflow.repositories;
+package com.abrxu.upflow.department.repositories;
 
-import com.abrxu.upflow.models.department.Department;
+import com.abrxu.upflow.department.domain.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

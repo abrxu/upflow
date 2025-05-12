@@ -1,4 +1,4 @@
-package com.abrxu.upflow.models.feedback;
+package com.abrxu.upflow.feedback.domain;
 
 public enum FeedbackType {
 
