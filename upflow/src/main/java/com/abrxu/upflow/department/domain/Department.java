@@ -24,7 +24,7 @@ public class Department {
     @Column(name = "txt_description")
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_manager")
     private User manager;
 
