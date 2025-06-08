@@ -31,13 +31,14 @@ public class User {
     @Column(name = "txt_last_name")
     private String lastName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_department")
     @JsonBackReference
     private Department department;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinColumn(name = "id_credentials")
+    @JsonBackReference
     private UserCredentials credentials;
 
     @Column(name = "dt_last_feedback")

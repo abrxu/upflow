@@ -3,11 +3,14 @@ package com.abrxu.upflow.department.services;
 import com.abrxu.upflow.department.domain.Department;
 import com.abrxu.upflow.department.dtos.DepartmentCreationDTO;
 import com.abrxu.upflow.department.repositories.DepartmentRepository;
+import com.abrxu.upflow.exceptions.ErrorCode;
+import com.abrxu.upflow.exceptions.ErrorCodeException;
 import com.abrxu.upflow.user.domain.User;
 import com.abrxu.upflow.user.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -22,23 +25,22 @@ public class DepartmentManagementService {
         this.departmentRepository = departmentRepository;
     }
 
-    // TODO: create a Department response DTO to return the department with users.
     @Transactional
     public Department createDepartment(DepartmentCreationDTO dto) {
 
-        if (dto.usersIds().contains(dto.managerId())) throw new RuntimeException("Manager cannot be also a common user.");
+        if (dto.usersIds() != null && dto.usersIds().contains(dto.managerId()))
+            throw new ErrorCodeException(ErrorCode.MANAGER_CANT_BE_AN_EMPLOYEE);
 
         var department = new Department();
-        var manager = userService.findUserById(dto.managerId());
         BeanUtils.copyProperties(dto, department, "managerId", "usersIds");
 
+        var manager = userService.findUserById(dto.managerId());
         department.setManager(manager);
         manager.setDepartment(department);
 
-        List<Long> ids = dto.usersIds();
-        if (ids != null && !ids.isEmpty()) {
-            List<User> users = userService.findUsersByIds(ids);
-            users.forEach(user -> user.setDepartment(department));
+        if (!CollectionUtils.isEmpty(dto.usersIds())) {
+            List<User> users = userService.findUsersByIds(dto.usersIds());
+            users.forEach(u -> u.setDepartment(department));
             department.setUsers(users);
         }
 

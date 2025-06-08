@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,10 +31,10 @@ public class Department {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     @JsonManagedReference
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
-    private List<Feedback> feedbacks;
+    private List<Feedback> feedbacks = new ArrayList<>();
 
     @Column(name = "dt_created_at")
     private LocalDateTime createdAt;

@@ -1,6 +1,8 @@
 package com.abrxu.upflow.user.services;
 
 import com.abrxu.upflow.department.services.DepartmentService;
+import com.abrxu.upflow.exceptions.ErrorCode;
+import com.abrxu.upflow.exceptions.ErrorCodeException;
 import com.abrxu.upflow.user.domain.User;
 import com.abrxu.upflow.user.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class UserService {
 
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
     }
 
 }
