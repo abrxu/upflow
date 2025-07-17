@@ -17,16 +17,17 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id_department", nullable = false)
     private Long id;
 
-    @Column(name = "txt_name", length = 50)
+    @Column(name = "txt_name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "txt_description")
+    @Column(name = "txt_description", nullable = false)
     private String description;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_manager")
+    @JoinColumn(name = "id_manager", nullable = false)
     private User manager;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
@@ -36,7 +37,7 @@ public class Department {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private List<Feedback> feedbacks = new ArrayList<>();
 
-    @Column(name = "dt_created_at")
+    @Column(name = "dt_created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
