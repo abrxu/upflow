@@ -3,9 +3,6 @@ package com.abrxu.upflow.user.domain;
 import com.abrxu.upflow.department.domain.Department;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,18 +14,13 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_user", nullable = false)
     private Long id;
 
-    @Size(max = 80, message = "Your name can't have more than 80 letters.")
-    @NotNull(message = "You must fill the name section.")
-    @NotBlank(message = "You must fill the name section.")
-    @Column(name = "txt_name")
+    @Column(name = "txt_name", nullable = false, length = 80)
     private String name;
 
-    @Size(max = 80, message = "Your last name can't have more than 80 letters.")
-    @NotNull(message = "You must fill the last name section.")
-    @NotBlank(message = "You must fill the last name section.")
-    @Column(name = "txt_last_name")
+    @Column(name = "txt_last_name", nullable = false, length = 80)
     private String lastName;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -37,27 +29,15 @@ public class User {
     private Department department;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JoinColumn(name = "id_credentials")
-    @JsonBackReference
     private UserCredentials credentials;
 
     @Column(name = "dt_last_feedback")
     private LocalDateTime lastFeedback;
 
-    @NotNull(message = "It occurred an error during the user creation. Please try again.")
-    @Column(name = "dt_created_at")
+    @Column(name = "dt_created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @PrePersist
-    private void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
 
     @Column(name = "dt_updated_at")
     private LocalDateTime updatedAt;
 
-    @PreUpdate
-    private void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

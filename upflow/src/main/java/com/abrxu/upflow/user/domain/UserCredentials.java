@@ -1,6 +1,5 @@
 package com.abrxu.upflow.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,18 +38,7 @@ public class UserCredentials {
     private LocalDateTime lastUpdated;
 
     @OneToOne(mappedBy = "credentials")
-    @JsonManagedReference
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
     private User user;
-
-    @PrePersist
-    private void onCreate() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    private void onUpdate() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
 
 }
