@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-load-initial-users
+      author: abrxu
+      context: "fixtures"
+      changes:
+        - loadData:
+            tableName: tbl_user
+            file: db/changelog/data/csv/initial-users.csv
+            separator: ","

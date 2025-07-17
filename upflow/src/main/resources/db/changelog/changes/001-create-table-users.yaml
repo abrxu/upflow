@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-table-users
+      author: abrxu
+      changes:
+        - createTable:
+            tableName: tbl_user
+            columns:
+              - column:
+                  name: id_user
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: txt_name
+                  type: VARCHAR(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: txt_last_name
+                  type: VARCHAR(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_department
+                  type: INTEGER
+              - column:
+                  name: dt_last_feedback
+                  type: TIMESTAMP
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dt_updated_at
+                  type: TIMESTAMP
