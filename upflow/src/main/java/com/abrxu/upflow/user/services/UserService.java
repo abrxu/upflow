@@ -42,6 +42,7 @@ public class UserService {
 
         userMapper.editFromDTO(dto, user);
 
+        userRepository.save(user);
 
         return UserResponseDTO.from(user);
     }
