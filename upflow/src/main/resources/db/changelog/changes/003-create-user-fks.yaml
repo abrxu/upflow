@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-user-fks
+      author: abrxu
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_user_id_credentials
+            baseTableName: tbl_user_credentials
+            baseColumnNames: id_user
+            referencedTableName: tbl_user
+            referencedColumnNames: id_user
