@@ -16,7 +16,7 @@ public record UserResponseDTO(
         Department department
 )
 {
-        public static UserResponseDTO from(User user) {
+    public static UserResponseDTO from(User user) {
                 return new UserResponseDTO(
                         user.getId(),
                         user.getCredentials().getUsername(),
