@@ -4,14 +4,18 @@ import com.abrxu.upflow.feedback.domain.Feedback;
 import com.abrxu.upflow.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "tbl_department")
 public class Department {
 
@@ -32,10 +36,10 @@ public class Department {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     @JsonManagedReference
-    private List<User> users = new ArrayList<>();
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
-    private List<Feedback> feedbacks = new ArrayList<>();
+    private Set<Feedback> feedbacks = new HashSet<>();
 
     @Column(name = "dt_created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -51,6 +55,19 @@ public class Department {
     @PreUpdate
     private void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Department)) return false;
+        Department that = (Department) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
 }
