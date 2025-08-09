@@ -42,19 +42,19 @@ public class User {
     @Column(name = "dt_last_feedback")
     private LocalDateTime lastFeedback;
 
-    @Column(name = "dt_created_at", nullable = false, updatable = false, insertable = false)
+    @Column(name = "dt_created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
-    private void onCreate() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    @Column(name = "dt_updated_at", insertable = false, updatable = false)
+    @Column(name = "dt_updated_at")
     private LocalDateTime updatedAt;
 
     @PreUpdate
-    private void onUpdate() {
+    public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 

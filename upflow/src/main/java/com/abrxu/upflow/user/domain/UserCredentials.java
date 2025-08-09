@@ -42,7 +42,7 @@ public class UserCredentials {
     private LocalDateTime updatedAt;
 
     @PreUpdate
-    private void onUpdate() {
+    public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
