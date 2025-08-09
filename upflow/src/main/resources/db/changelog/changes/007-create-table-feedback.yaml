@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-table-feedback
+      author: abrxu
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: tbl_feedback
+      changes:
+        - createTable:
+            tableName: tbl_feedback
+            columns:
+              - column:
+                  name: id_feedback
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: txt_message
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: txt_type
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_department
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_user
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false

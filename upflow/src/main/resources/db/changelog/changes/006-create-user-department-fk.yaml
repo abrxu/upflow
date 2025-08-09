@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-user-department-fk
+      author: abrxu
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: fk_user_id_department
+                foreignKeyTableName: tbl_user
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_user_id_department
+            baseTableName: tbl_user
+            baseColumnNames: id_department
+            referencedTableName: tbl_department
+            referencedColumnNames: id_department

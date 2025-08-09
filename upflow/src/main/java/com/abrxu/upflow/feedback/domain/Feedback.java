@@ -21,19 +21,17 @@ public class Feedback {
     @Column(name = "id_feedback")
     private Long id;
 
-    @Size(max = 255)
-    @NotNull(message = "You need to fill the input with a message.")
-    @NotBlank(message = "You need to fill the input with a message.")
     @Column(name = "txt_message")
     private String message;
 
-    @NotNull(message = "It occurred an error during the feedback creation. Please try again.")
+    @Column(name = "dt_created_at")
     private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "id_department", updatable = false)
     private Department department;
 
+    @Column(name = "txt_type")
     @Enumerated(EnumType.STRING)
     private FeedbackType type;
 

@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     INCORRECT_CREDENTIALS("incorrect_credentials", HttpStatus.BAD_REQUEST, "Invalid user credentials."),
-    USER_NOT_FOUND("user_not_found", HttpStatus.NOT_FOUND, "User not found."),
 
-    MANAGER_CANT_BE_AN_EMPLOYEE("manager_cant_be_an_employee", HttpStatus.CONFLICT, "The manager can't be also an employee."),;
+    DEPARTMENT_NOT_FOUND("department_not_found", HttpStatus.NOT_FOUND, "Department not found."),
+
+    USER_NOT_FOUND("user_not_found", HttpStatus.NOT_FOUND, "User not found."),
+    USER_MANAGER_CANT_BE_AN_EMPLOYEE("user_manager_cant_be_an_employee", HttpStatus.CONFLICT, "The manager can't be also an employee."),;
 
     final String code;
     final HttpStatus status;
