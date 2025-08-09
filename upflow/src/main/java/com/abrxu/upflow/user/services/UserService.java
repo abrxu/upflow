@@ -8,6 +8,9 @@ import com.abrxu.upflow.user.dtos.UserResponseDTO;
 import com.abrxu.upflow.user.mappers.UserCredentialsMapper;
 import com.abrxu.upflow.user.mappers.UserMapper;
 import com.abrxu.upflow.user.repositories.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +26,7 @@ public class UserService {
         this.userCredentialsMapper = userCredentialsMapper;
     }
 
+    @Transactional
     public UserResponseDTO createUser(UserCreationDTO dto) {
 
         var user = userMapper.dtoToUser(dto);
@@ -36,6 +40,11 @@ public class UserService {
         return UserResponseDTO.from(user);
     }
 
+    public Page<UserResponseDTO> getPaginatedUsers(String search, Pageable pageable) {
+        return userRepository.getPaginatedUsers(search, pageable);
+    }
+
+    @Transactional
     public UserResponseDTO editUser(UserEditDTO dto, Long userId) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
