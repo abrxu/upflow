@@ -1,7 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: 005-create-user-fks
+      id: 003-create-user-fks
       author: abrxu
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: fk_user_id_credentials
+                foreignKeyTableName: tbl_user_credentials
       changes:
         - addForeignKeyConstraint:
             constraintName: fk_user_id_credentials
