@@ -1,5 +1,6 @@
 package com.abrxu.upflow.department.services;
 
+import com.abrxu.upflow.department.domain.Department;
 import com.abrxu.upflow.department.dtos.DepartmentCreationDTO;
 import com.abrxu.upflow.department.dtos.DepartmentEditDTO;
 import com.abrxu.upflow.department.dtos.DepartmentResponseDTO;
@@ -7,11 +8,14 @@ import com.abrxu.upflow.department.mappers.DepartmentMapper;
 import com.abrxu.upflow.department.repositories.DepartmentRepository;
 import com.abrxu.upflow.exceptions.ErrorCode;
 import com.abrxu.upflow.exceptions.ErrorCodeException;
+import com.abrxu.upflow.user.domain.User;
 import com.abrxu.upflow.user.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class DepartmentService {
@@ -28,6 +32,9 @@ public class DepartmentService {
 
     @Transactional
     public DepartmentResponseDTO createDepartment(DepartmentCreationDTO dto) {
+
+        validateManager(dto.managerId(), dto.usersIds());
+
         var manager = userRepository.findById(dto.managerId())
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
 
@@ -40,15 +47,16 @@ public class DepartmentService {
 
         departmentRepository.save(department);
 
-        users.add(manager);
-        for (var user : users) user.setDepartment(department);
-        userRepository.saveAll(users);
+        setDepartmentToUsers(users, manager, department);
 
         return departmentMapper.departmentToDTO(department);
     }
 
     @Transactional
     public DepartmentResponseDTO editDepartment(DepartmentEditDTO dto, Long departmentId) {
+
+        validateManager(dto.managerId(), dto.usersIds());
+
         var department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -64,9 +72,7 @@ public class DepartmentService {
 
         departmentRepository.save(department);
 
-        users.add(manager);
-        for (var user : users) user.setDepartment(department);
-        userRepository.saveAll(users);
+        setDepartmentToUsers(users, manager, department);
 
         return departmentMapper.departmentToDTO(department);
     }
@@ -74,6 +80,21 @@ public class DepartmentService {
     public DepartmentResponseDTO getDepartment(Long departmentId) {
         return departmentMapper.departmentToDTO(departmentRepository.findByIdAndFetchRelations(departmentId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND)));
+    }
+
+    public void validateManager(Long managerId, List<Long> usersIds) {
+        if (usersIds
+                .stream()
+                .anyMatch(u -> u.equals(managerId))) {
+            throw new ErrorCodeException(ErrorCode.USER_MANAGER_CANT_BE_AN_EMPLOYEE);
+        }
+    }
+
+    @Transactional
+    public void setDepartmentToUsers(Set<User> users, User manager, Department department) {
+        users.add(manager);
+        for (var user : users) user.setDepartment(department);
+        userRepository.saveAll(users);
     }
 
 }
