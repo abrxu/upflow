@@ -41,6 +41,11 @@ public class UserCredentials {
     @Column(name = "dt_updated_at")
     private LocalDateTime updatedAt;
 
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;

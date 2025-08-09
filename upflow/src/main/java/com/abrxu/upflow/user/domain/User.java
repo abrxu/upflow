@@ -53,6 +53,11 @@ public class User {
     @Column(name = "dt_updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Set<Feedback> feedbacks = new HashSet<>();
