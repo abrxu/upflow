@@ -24,6 +24,16 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ErrorCodeException.class)
+    public ResponseEntity<Map<String, Object>> handleErrorCodeException(ErrorCodeException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("code", ex.getErrorCode().code);
+        errorResponse.put("status", ex.getErrorCode().getStatus().value());
+        errorResponse.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(errorResponse, ex.getErrorCode().getStatus());
+    }
+
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();
         errorResponse.put("errors", errors);
