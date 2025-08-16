@@ -10,12 +10,18 @@ import com.abrxu.upflow.exceptions.ErrorCode;
 import com.abrxu.upflow.exceptions.ErrorCodeException;
 import com.abrxu.upflow.user.domain.User;
 import com.abrxu.upflow.user.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class DepartmentService {
@@ -29,6 +35,7 @@ public class DepartmentService {
         this.departmentMapper = departmentMapper;
         this.departmentRepository = departmentRepository;
     }
+
 
     @Transactional
     public DepartmentResponseDTO createDepartment(DepartmentCreationDTO dto) {
@@ -80,6 +87,23 @@ public class DepartmentService {
     public DepartmentResponseDTO getDepartment(Long departmentId) {
         return departmentMapper.departmentToDTO(departmentRepository.findByIdAndFetchRelations(departmentId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND)));
+    }
+
+    public Page<DepartmentResponseDTO> getPaginatedDepartments(String search, Pageable pageable) {
+
+        Page<Long> departmentIds = departmentRepository.getPaginatedDepartmentIds(search, pageable);
+
+        List<Department> departments = departmentRepository.findDepartmentsWithUsersByIds(departmentIds.getContent());
+
+        Map<Long, Department> departmentMap = departments.stream()
+                .collect(Collectors.toMap(Department::getId, Function.identity()));
+
+        List<DepartmentResponseDTO> dtos = departmentIds.getContent().stream()
+                .map(departmentMap::get)
+                .map(departmentMapper::departmentToDTO)
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, departmentIds.getTotalElements());
     }
 
     public void validateManager(Long managerId, List<Long> usersIds) {

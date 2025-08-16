@@ -5,6 +5,8 @@ import com.abrxu.upflow.department.dtos.DepartmentEditDTO;
 import com.abrxu.upflow.department.dtos.DepartmentResponseDTO;
 import com.abrxu.upflow.department.services.DepartmentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,14 @@ public class DepartmentController {
     @PostMapping
     public ResponseEntity<DepartmentResponseDTO> createDepartment(@Valid @RequestBody DepartmentCreationDTO dto) {
         return new ResponseEntity<>(departmentService.createDepartment(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DepartmentResponseDTO>> getPaginatedDepartments(
+            @RequestParam(name = "search", required = false) String search,
+            Pageable pageable
+    ) {
+        return new ResponseEntity<>(departmentService.getPaginatedDepartments(search, pageable), HttpStatus.OK);
     }
 
     @PutMapping("/{departmentId}")

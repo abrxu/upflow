@@ -21,4 +21,8 @@ public record DepartmentResponseDTO(
 
         LocalDateTime updatedAt
 
-) {}
+) {
+    public DepartmentResponseDTO(Long id, String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(id, name, description, null, Set.of(), createdAt, updatedAt);
+    }
+}
