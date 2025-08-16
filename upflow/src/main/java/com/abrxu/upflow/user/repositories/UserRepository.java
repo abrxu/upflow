@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                    UPPER(u.name) LIKE UPPER(CONCAT('%', :search, '%')) OR
                    UPPER(u.lastName) LIKE UPPER(CONCAT('%', :search, '%')))
             """)
-    Page<UserResponseDTO> getPaginatedUsers(String search, Pageable pageable);
+    Page<UserResponseDTO> getPaginatedUsers(@Param("search") String search, Pageable pageable);
 
     @Query("""
             FROM User u
