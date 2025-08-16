@@ -16,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -100,6 +97,7 @@ public class DepartmentService {
 
         List<DepartmentResponseDTO> dtos = departmentIds.getContent().stream()
                 .map(departmentMap::get)
+                .filter(Objects::nonNull)
                 .map(departmentMapper::departmentToDTO)
                 .toList();
 
