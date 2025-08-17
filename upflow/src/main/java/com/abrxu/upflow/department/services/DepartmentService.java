@@ -54,13 +54,7 @@ public class DepartmentService {
         setDepartmentToUsers(users, manager, department);
 
         return departmentMapper.departmentToDTO(department);
-    }
-
-    @Transactional
-    public DepartmentResponseDTO editDepartment(DepartmentEditDTO dto, Long departmentId) {
-
-        validateManager(dto.managerId(), dto.usersIds());
-
+    } @Transactional public DepartmentResponseDTO editDepartment(DepartmentEditDTO dto, Long departmentId) { validateManager(dto.managerId(), dto.usersIds());
         var department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -79,6 +73,20 @@ public class DepartmentService {
         setDepartmentToUsers(users, manager, department);
 
         return departmentMapper.departmentToDTO(department);
+    }
+
+    @Transactional
+    public void deleteDepartment(Long departmentId) {
+       var department = departmentRepository.findByIdAndFetchRelations(departmentId)
+               .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND));
+
+       department.getManager().setDepartment(null);
+       department.getUsers().add(department.getManager());
+       department.getUsers().forEach(u -> u.setDepartment(null));
+
+       userRepository.saveAll(department.getUsers());
+
+       departmentRepository.delete(department);
     }
 
     public DepartmentResponseDTO getDepartment(Long departmentId) {
