@@ -11,7 +11,9 @@ public enum ErrorCode {
     DEPARTMENT_NOT_FOUND("department_not_found", HttpStatus.NOT_FOUND, "Department not found."),
 
     USER_NOT_FOUND("user_not_found", HttpStatus.NOT_FOUND, "User not found."),
-    USER_MANAGER_CANT_BE_AN_EMPLOYEE("user_manager_cant_be_an_employee", HttpStatus.CONFLICT, "The manager can't be also an employee."),;
+    USER_MANAGER_CANT_BE_AN_EMPLOYEE("user_manager_cant_be_an_employee", HttpStatus.CONFLICT, "The manager can't be also an employee."),
+
+    SECRET_SALT_NOT_DEFINED("secret_salt_not_defined", HttpStatus.BAD_REQUEST, "You need to define the SECRET_SALT to allow anonymous feedbacks.");
 
     final String code;
     final HttpStatus status;
