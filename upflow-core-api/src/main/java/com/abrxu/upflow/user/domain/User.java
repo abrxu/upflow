@@ -31,10 +31,8 @@ public class User {
     @Column(name = "txt_last_name", nullable = false, length = 80)
     private String lastName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_department")
-    @JsonBackReference
-    private Department department;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserDepartment> departmentAssociations = new HashSet<>();
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private UserCredentials credentials;

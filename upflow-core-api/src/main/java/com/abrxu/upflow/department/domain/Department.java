@@ -2,6 +2,7 @@ package com.abrxu.upflow.department.domain;
 
 import com.abrxu.upflow.feedback.domain.Feedback;
 import com.abrxu.upflow.user.domain.User;
+import com.abrxu.upflow.user.domain.UserDepartment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,13 +31,8 @@ public class Department {
     @Column(name = "txt_description", nullable = false)
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_manager", nullable = false)
-    private User manager;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
-    @JsonManagedReference
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserDepartment> userAssociations = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private Set<Feedback> feedbacks = new HashSet<>();
