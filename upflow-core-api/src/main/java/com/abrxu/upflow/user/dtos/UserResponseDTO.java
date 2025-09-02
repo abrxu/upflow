@@ -1,9 +1,7 @@
 package com.abrxu.upflow.user.dtos;
 
-import com.abrxu.upflow.department.domain.Department;
-import com.abrxu.upflow.user.domain.User;
-
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public record UserResponseDTO(
 
@@ -13,19 +11,6 @@ public record UserResponseDTO(
         String lastName,
         String email,
         LocalDateTime createdAt,
-        Department department
+        Set<UserDepartmentResponseDTO> associations
 )
-{
-    public static UserResponseDTO from(User user) {
-                return new UserResponseDTO(
-                        user.getId(),
-                        user.getCredentials().getUsername(),
-                        user.getName(),
-                        user.getLastName(),
-                        user.getCredentials().getEmail(),
-                        user.getCreatedAt(),
-                        user.getDepartment()
-                );
-        }
-
-}
+{}

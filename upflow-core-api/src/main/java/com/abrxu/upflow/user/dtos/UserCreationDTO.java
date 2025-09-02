@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 public record UserCreationDTO(
 
         @Size(min = 3, max = 24, message = "Your username must have more than 3 letters and less than 24.")
@@ -32,7 +34,7 @@ public record UserCreationDTO(
         @NotBlank(message = "You must fill the password section.")
         String password,
 
-        Long departmentId
+        List<UserDepartmentUserCreationDTO> associations
 
 )
 {}

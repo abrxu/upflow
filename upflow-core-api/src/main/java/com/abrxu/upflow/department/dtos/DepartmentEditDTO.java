@@ -1,6 +1,8 @@
 package com.abrxu.upflow.department.dtos;
 
-import java.util.List;
+import com.abrxu.upflow.user.dtos.UserDepartmentCreationDTO;
+
+import java.util.Set;
 
 public record DepartmentEditDTO(
 
@@ -8,9 +10,7 @@ public record DepartmentEditDTO(
 
         String description,
 
-        Long managerId,
-
-        List<Long> usersIds
+        Set<UserDepartmentCreationDTO> associations
 
 ) {
 }

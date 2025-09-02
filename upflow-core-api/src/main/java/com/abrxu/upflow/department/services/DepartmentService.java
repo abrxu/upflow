@@ -8,7 +8,10 @@ import com.abrxu.upflow.department.mappers.DepartmentMapper;
 import com.abrxu.upflow.department.repositories.DepartmentRepository;
 import com.abrxu.upflow.exceptions.ErrorCode;
 import com.abrxu.upflow.exceptions.ErrorCodeException;
+import com.abrxu.upflow.user.domain.DepartmentRole;
 import com.abrxu.upflow.user.domain.User;
+import com.abrxu.upflow.user.domain.UserDepartment;
+import com.abrxu.upflow.user.dtos.UserDepartmentCreationDTO;
 import com.abrxu.upflow.user.repositories.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,54 +39,47 @@ public class DepartmentService {
     @Transactional
     public DepartmentResponseDTO createDepartment(DepartmentCreationDTO dto) {
 
-        validateManager(dto.managerId(), dto.usersIds());
-
-        var manager = userRepository.findById(dto.managerId())
-                .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
-
-        var users = new HashSet<>(userRepository.getUsersByIds(dto.usersIds()));
-
         var department = departmentMapper.dtoToDepartment(dto);
 
-        department.setUsers(users);
-        department.setManager(manager);
+        for (var dep : dto.associations()) {
+            User user = userRepository.findById(dep.userId())
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
+
+            UserDepartment userDepartment = new UserDepartment(user, department, dep.role() != null ? dep.role() : DepartmentRole.MEMBER);
+
+            department.getUserAssociations().add(userDepartment);
+        }
 
         departmentRepository.save(department);
 
-        setDepartmentToUsers(users, manager, department);
-
         return departmentMapper.departmentToDTO(department);
-    } @Transactional public DepartmentResponseDTO editDepartment(DepartmentEditDTO dto, Long departmentId) { validateManager(dto.managerId(), dto.usersIds());
-        var department = departmentRepository.findById(departmentId)
+    }
+
+    @Transactional
+    public DepartmentResponseDTO editDepartment(DepartmentEditDTO dto, Long departmentId) {
+        Department department = departmentRepository.findByIdAndFetchRelations(departmentId)
                 .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
-        var manager = userRepository.findById(dto.managerId())
-                .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
+        department.getUserAssociations().clear();
 
-        var users = new HashSet<>(userRepository.getUsersByIds(dto.usersIds()));
+        for (UserDepartmentCreationDTO dep : dto.associations()) {
+            User user = userRepository.findById(dep.userId())
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND));
 
-        departmentMapper.editFromDTO(dto, department);
+            UserDepartment userDepartment = new UserDepartment(user, department, dep.role() != null ? dep.role() : DepartmentRole.MEMBER);
 
-        department.setUsers(users);
-        department.setManager(manager);
+            department.getUserAssociations().add(userDepartment);
+        }
 
-        departmentRepository.save(department);
+        Department updatedDepartment = departmentRepository.save(department);
 
-        setDepartmentToUsers(users, manager, department);
-
-        return departmentMapper.departmentToDTO(department);
+        return departmentMapper.departmentToDTO(updatedDepartment);
     }
 
     @Transactional
     public void deleteDepartment(Long departmentId) {
        var department = departmentRepository.findByIdAndFetchRelations(departmentId)
                .orElseThrow(() -> new ErrorCodeException(ErrorCode.DEPARTMENT_NOT_FOUND));
-
-       department.getManager().setDepartment(null);
-       department.getUsers().add(department.getManager());
-       department.getUsers().forEach(u -> u.setDepartment(null));
-
-       userRepository.saveAll(department.getUsers());
 
        departmentRepository.delete(department);
     }
@@ -96,35 +91,30 @@ public class DepartmentService {
 
     public Page<DepartmentResponseDTO> getPaginatedDepartments(String search, Pageable pageable) {
 
-        Page<Long> departmentIds = departmentRepository.getPaginatedDepartmentIds(search, pageable);
+        Page<Department> departmentPage = departmentRepository.findDepartmentsWithPagination(search, pageable);
+        List<Department> departmentsOnPage = departmentPage.getContent();
 
-        List<Department> departments = departmentRepository.findDepartmentsWithUsersByIds(departmentIds.getContent());
+        if (departmentsOnPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
 
-        Map<Long, Department> departmentMap = departments.stream()
-                .collect(Collectors.toMap(Department::getId, Function.identity()));
-
-        List<DepartmentResponseDTO> dtos = departmentIds.getContent().stream()
-                .map(departmentMap::get)
-                .filter(Objects::nonNull)
-                .map(departmentMapper::departmentToDTO)
+        List<Long> departmentIds = departmentsOnPage.stream()
+                .map(Department::getId)
                 .toList();
 
-        return new PageImpl<>(dtos, pageable, departmentIds.getTotalElements());
-    }
+        List<UserDepartment> associations = departmentRepository.findDepartmentAssociationsForDepartments(departmentIds);
 
-    public void validateManager(Long managerId, List<Long> usersIds) {
-        if (usersIds
-                .stream()
-                .anyMatch(u -> u.equals(managerId))) {
-            throw new ErrorCodeException(ErrorCode.USER_MANAGER_CANT_BE_AN_EMPLOYEE);
-        }
-    }
+        Map<Long, List<UserDepartment>> associationsByDepartmentId = associations.stream()
+                .collect(Collectors.groupingBy(ud -> ud.getDepartment().getId()));
 
-    @Transactional
-    public void setDepartmentToUsers(Set<User> users, User manager, Department department) {
-        users.add(manager);
-        for (var user : users) user.setDepartment(department);
-        userRepository.saveAll(users);
+        List<DepartmentResponseDTO> dtos = departmentsOnPage.stream()
+                .map(department -> {
+                    List<UserDepartment> departmentAssociations = associationsByDepartmentId.getOrDefault(department.getId(),
+                            Collections.emptyList());
+                    return departmentMapper.departmentAndAssociationsToDTO(department, departmentAssociations);
+                }).toList();
+
+        return new PageImpl<>(dtos, pageable, departmentPage.getTotalElements());
     }
 
 }

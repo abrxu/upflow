@@ -1,8 +1,6 @@
 package com.abrxu.upflow.user.domain;
 
-import com.abrxu.upflow.department.domain.Department;
 import com.abrxu.upflow.feedback.domain.Feedback;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +30,7 @@ public class User {
     private String lastName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserDepartment> departmentAssociations = new HashSet<>();
+    private Set<UserDepartment> associations = new HashSet<>();
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private UserCredentials credentials;
