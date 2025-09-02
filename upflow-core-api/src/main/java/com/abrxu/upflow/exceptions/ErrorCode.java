@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     INCORRECT_CREDENTIALS("incorrect_credentials", HttpStatus.BAD_REQUEST, "Invalid user credentials."),
+    INVALID_REQUEST_BODY("invalid_request_body", HttpStatus.BAD_REQUEST, "Invalid request body."),
 
     DEPARTMENT_NOT_FOUND("department_not_found", HttpStatus.NOT_FOUND, "Department not found."),
 
