@@ -1,39 +1,38 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-create-table-department
+      id: 005-create-table-user-department
       author: abrxu
       preConditions:
         - onFail: MARK_RAN
         - not:
             - tableExists:
-                tableName: tbl_department
+                tableName: tbl_user_department
       changes:
         - createTable:
-            tableName: tbl_department
+            tableName: tbl_user_department
             columns:
               - column:
                   name: id_department
                   type: INTEGER
-                  autoIncrement: true
                   constraints:
-                    primaryKey: true
                     nullable: false
               - column:
-                  name: txt_name
+                  name: id_user
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: txt_role
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
               - column:
-                  name: txt_description
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: dt_created_at
+                  name: dt_joined_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
-              - column:
-                  name: dt_updated_at
-                  type: TIMESTAMP
+        - addPrimaryKey:
+            columnNames: id_department, id_user
+            constraintName: pk_user_department
+            tableName: tbl_user_department

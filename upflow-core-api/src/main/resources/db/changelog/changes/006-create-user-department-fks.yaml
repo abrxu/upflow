@@ -6,12 +6,15 @@ databaseChangeLog:
         - onFail: MARK_RAN
         - not:
             - foreignKeyConstraintExists:
-                foreignKeyName: fk_user_id_department
-                foreignKeyTableName: tbl_user
+                foreignKeyName: fk_user_department_id_user
+                foreignKeyTableName: tbl_user_department
+            - foreignKeyConstraintExists:
+                foreignKeyName: fk_user_department_id_department
+                foreignKeyTableName: tbl_user_department
       changes:
         - addForeignKeyConstraint:
-            constraintName: fk_user_id_department
-            baseTableName: tbl_user
+            constraintName: fk_user_department_id_department
+            baseTableName: tbl_user_department
             baseColumnNames: id_department
             referencedTableName: tbl_department
             referencedColumnNames: id_department

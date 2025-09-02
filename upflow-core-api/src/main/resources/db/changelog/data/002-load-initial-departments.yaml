@@ -1,0 +1,10 @@
+databaseChangeLog:
+    - changeSet:
+        id: 002-load-initial-departments
+        author: abrxu
+        context: "fixtures"
+        changes:
+            - loadData:
+                tableName: tbl_department
+                file: db/changelog/data/csv/initial-departments.csv
+                separator: ","

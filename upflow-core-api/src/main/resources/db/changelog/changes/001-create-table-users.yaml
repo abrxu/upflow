@@ -29,9 +29,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: id_department
-                  type: INTEGER
-              - column:
                   name: dt_last_feedback
                   type: TIMESTAMP
               - column:
