@@ -19,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule, // <-- Import for reactive forms
+    ReactiveFormsModule, // reactive forms
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -31,11 +31,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./user-create.component.scss']
 })
 export class UserCreateComponent {
-  // Inject services and FormBuilder using the modern `inject` function
+
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
 
-  // Define the form structure
   userForm: FormGroup;
   departmentRoles = Object.values(DepartmentRole);
 
@@ -46,7 +45,7 @@ export class UserCreateComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      associations: this.fb.array([]) // Start with an empty array of associations
+      associations: this.fb.array([])
     });
   }
 
