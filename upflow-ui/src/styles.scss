@@ -1,29 +1,55 @@
-@use '@angular/material' as mat;
+@use 'styles/variables' as vars;
+@use "assets/theme";
 
-@include mat.core();
+@import 'primeicons/primeicons.css';
 
-$upflow-primary: mat.define-palette(mat.$indigo-palette, 500);
-$upflow-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+:root {
+  --primary: #{vars.$primary};
+  --primary-glow: #{vars.$primary-glow};
+  --background: #{vars.$background};
+  --card-background: #{vars.$card-background};
+  --muted: #{vars.$muted};
+  --muted-foreground: #{vars.$muted-foreground};
+  --border: #{vars.$border};
+  --text-color: #{vars.$text-color};
+  --white-10: #{vars.$white-10};
+  --error-color: #{vars.$error-color};
 
-$upflow-warn: mat.define-palette(mat.$red-palette);
-
-$upflow-theme: mat.define-light-theme((
-  color: (
-    primary: $upflow-primary,
-    accent: $upflow-accent,
-    warn: $upflow-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0,
-));
-
-@include mat.all-component-themes($upflow-theme);
-
-html, body {
-  height: 100%;
+  --primary-color: var(--primary);
+  --primary-color-text: var(--text-color);
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+.login-page .custom-divider .p-divider-content {
+  display: flex;
+  margin: 0 auto;
+  background-color: var(--card-background) !important;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.p-password.full-width .p-inputtext {
+  width: 100%;
+}
+
+.full-width-btn {
+  width: 100%;
+  .p-button {
+    width: 100%;
+    text-align: center;
+  }
+
+    transition: transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 }
