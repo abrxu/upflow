@@ -1,36 +1,37 @@
-<div class="login-container">
-
-  <mat-card class="login-card">
-
-    <mat-card-header>
-      <mat-card-title>Welcome to Upflow</mat-card-title>
-      <mat-card-subtitle>Please sign in to continue</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-
-      <form class="login-form">
-
-        <mat-form-field appearance="outline">
-
-          <mat-label>E-mail</mat-label>
-          <input matInput type="email" placeholder="you@company.com">
-
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Password</mat-label>
-          <input matInput type="password">
-        </mat-form-field>
-
-      </form>
-
-    </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-raised-button color="primary" class="login-button">Sign In</button>
-    </mat-card-actions>
-
-  </mat-card>
-
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-container">
+      <div class="login-logo">
+        <img src="" alt="">
+      </div>
+      <h1>Bem-vindo de volta!</h1>
+      <h2>Entre novamente para acessar o Upflow :)</h2>
+      <p-button class="microsoft-btn">
+        <i class="pi pi-microsoft"></i> Continue com a Microsoft
+      </p-button>
+      <p-divider styleClass="custom-divider">Ou continue com seu e-mail</p-divider>
+      <div class="login-inputs">
+        <div class="input-group">
+          <label for="email">
+            <i class="pi pi-envelope"></i> E-mail
+          </label>
+          <input pInputText id="email" placeholder="Digite seu email" aria-describedby="email-help" />
+        </div>
+        <div class="input-group">
+          <label for="password">
+            <i class="pi pi-lock"></i> Senha
+          </label>
+          <p-password id="password" placeholder="Digite sua senha" styleClass="full-width" [toggleMask]="true"/>
+        </div>
+      </div>
+      <div class="login-actions">
+        <p-checkbox inputId="remember-me-checkbox" [binary]="true"></p-checkbox>
+        <label for="remember-me-checkbox">Mantenha-me conectado</label>
+      </div>
+      <div class="login-btn-wrapper">
+        <p-button label="Entrar" [loading]="isLoading" (click)="onLogin()" styleClass="full-width-btn" />
+      </div>
+        <a href="#" class="forgot-password-link">Esqueceu sua senha?</a>
+    </div>
+  </div>
 </div>
