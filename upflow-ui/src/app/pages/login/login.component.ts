@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -10,6 +9,8 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
+import { AuthService } from '../../services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ import { PasswordModule } from 'primeng/password';
     CommonModule,
     RouterLink,
     ReactiveFormsModule,
-
+    FormsModule,
     CardModule,
     ButtonModule,
     DividerModule,
@@ -31,36 +32,45 @@ import { PasswordModule } from 'primeng/password';
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit {
-  showPassword = false;
-  loginForm!: FormGroup;
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private fb: FormBuilder) { }
-
+  loginForm: FormGroup;
   isLoading: boolean = false;
 
-  onLogin() {
-    this.isLoading = true;
-
-    setTimeout(() => {
-      console.log('Login attempt finished.');
-      this.isLoading = false;
-    }, 2000);
-  }
-
-  ngOnInit(): void {
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      remember: [false],
+      rememberMe: [false]
     });
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      console.log('Form Submitted!', this.loginForm.value);
-    } else {
-      this.loginForm.markAllAsTouched();
+  onLogin() {
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    this.isLoading = true;
+    this.loginForm.disable();
+    this.cdr.markForCheck();
+
+    this.authService.login(this.loginForm.value).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.loginForm.enable();
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log('Login bem sucedido!', response);
+      },
+      error: (error) => {
+        console.error('Erro no login:', error);
+      }
+    });
   }
 }
+
