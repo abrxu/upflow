@@ -1,0 +1,22 @@
+[project]
+name = "upflow-moderation-service"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "confluent-kafka>=2.13.0",
+    "fastavro>=1.12.1",
+    "openai>=2.16.0",
+    "presidio-analyzer>=2.2.360",
+    "presidio-anonymizer>=2.2.360",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "spacy>=3.8.11",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.14.14",
+]
