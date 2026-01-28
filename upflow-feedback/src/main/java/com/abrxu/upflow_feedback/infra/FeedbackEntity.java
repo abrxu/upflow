@@ -30,10 +30,10 @@ public class FeedbackEntity {
     @Column(nullable = false)
     private int rating;
 
-    @Column(name = "department_id", nullable = false)
+    @Column(nullable = false)
     private UUID departmentId;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(nullable = false)
     private Instant createdAt;
 
     public Feedback toDomain() {
