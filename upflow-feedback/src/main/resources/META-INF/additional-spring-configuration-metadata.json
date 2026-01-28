@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "app.error.base-uri",
+      "type": "java.lang.String",
+      "description": "Base URI for ProblemDetail error types in RFC 7807 responses"
+    }
+  ]
+}

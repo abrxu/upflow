@@ -1,18 +1,22 @@
 spring:
-    application:
-        name: upflow-feedback
+  application:
+    name: upflow-feedback
 
-    flyway:
-        baseline-on-migrate: on
+  flyway:
+    baseline-on-migrate: on
 
-    datasource:
-        url: ${DB_URL}
-        username: ${DB_USERNAME}
-        password: ${DB_PASSWORD}
-        driver-class-name: org.postgresql.Driver
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
-    jpa:
-        open-in-view: off
-        hibernate:
-            ddl-auto: validate
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
+  jpa:
+    open-in-view: off
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  error:
+    base-uri: ${APP_ERROR_BASE_URI}
