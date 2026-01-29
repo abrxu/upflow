@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "FeedbackModeratedEvent",
+  "namespace": "com.abrxu.upflow.events",
+  "fields": [
+    {"name": "feedback_id", "type": "string"},
+    {"name": "original_content", "type": "string"},
+    {"name": "moderated_content", "type": "string"},
+    {"name": "embedding", "type": {"type": "array", "items": "float"}},
+    {"name": "pii_detected", "type": "boolean"},
+    {"name": "names_detected", "type": {"type": "array", "items": "string"}},
+    {"name": "flagged", "type": "boolean"},
+    {"name": "flag_reason", "type": ["null", "string"], "default": null},
+    {"name": "severity", "type": {"type": "enum", "name": "Severity", "symbols": ["LOW", "MEDIUM", "HIGH"]}},
+    {"name": "tenant_id", "type": "string"},
+    {"name": "department_id", "type": ["null", "string"], "default": null},
+    {"name": "moderated_at", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

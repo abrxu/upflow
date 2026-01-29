@@ -8,7 +8,9 @@ public record Feedback(
         String message,
         int rating,
         UUID departmentId,
-        Instant createdAt
+        Instant createdAt,
+        FeedbackStatus status,
+        String moderatedContent
 ) {
     public Feedback {
         if (id == null) {
@@ -26,9 +28,16 @@ public record Feedback(
         if (createdAt == null) {
             throw new IllegalArgumentException("createdAt cannot be null");
         }
+        if (status == null) {
+            throw new IllegalArgumentException("status cannot be null");
+        }
     }
 
     public static Feedback create(String message, int rating, UUID departmentId) {
-        return new Feedback(UUID.randomUUID(), message, rating, departmentId, Instant.now());
+        return new Feedback(UUID.randomUUID(), message, rating, departmentId, Instant.now(), FeedbackStatus.PENDING, null);
+    }
+
+    public Feedback withModeration(String moderatedContent, FeedbackStatus status) {
+        return new Feedback(id, message, rating, departmentId, createdAt, status, moderatedContent);
     }
 }

@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "FeedbackSubmittedEvent",
+  "namespace": "com.abrxu.upflow.events",
+  "fields": [
+    {"name": "feedback_id", "type": "string"},
+    {"name": "content", "type": "string"},
+    {"name": "tenant_id", "type": "string"},
+    {"name": "department_id", "type": ["null", "string"], "default": null},
+    {"name": "submitted_at", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "metadata", "type": {"type": "map", "values": "string"}, "default": {}}
+  ]
+}

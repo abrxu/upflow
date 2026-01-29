@@ -2,6 +2,7 @@ package com.abrxu.upflow_feedback.infra.persistence;
 
 import com.abrxu.upflow_feedback.application.port.out.FeedbackRepository;
 import com.abrxu.upflow_feedback.domain.Feedback;
+import com.abrxu.upflow_feedback.domain.FeedbackStatus;
 import com.abrxu.upflow_feedback.infra.FeedbackEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,11 @@ public class JpaFeedbackRepository implements FeedbackRepository {
     @Override
     public boolean existsByDepartmentId(UUID departmentId) {
         return jpaRepository.existsByDepartmentId(departmentId);
+    }
+
+    @Override
+    public void updateModeration(UUID id, String moderatedContent, FeedbackStatus status) {
+        jpaRepository.updateModeration(id, moderatedContent, status);
     }
 
 }

@@ -8,6 +8,7 @@ import com.abrxu.upflow_feedback.application.port.in.FeedbackService;
 import com.abrxu.upflow_feedback.application.port.out.DepartmentRepository;
 import com.abrxu.upflow_feedback.application.port.out.FeedbackRepository;
 import com.abrxu.upflow_feedback.domain.Feedback;
+import com.abrxu.upflow_feedback.infra.kafka.FeedbackEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final DepartmentRepository departmentRepository;
     private final FeedbackMapper feedbackMapper;
+    private final FeedbackEventPublisher eventPublisher;
 
     @Override
     public FeedbackResponse create(CreateFeedbackRequest request) {
@@ -31,7 +33,11 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new ResourceNotFoundException("Department not found with id: " + request.departmentId());
         }
         Feedback feedback = feedbackMapper.toDomain(request);
-        return feedbackMapper.toResponse(feedbackRepository.save(feedback));
+        Feedback saved = feedbackRepository.save(feedback);
+
+        eventPublisher.publishSubmitted(saved, getTenantId());
+
+        return feedbackMapper.toResponse(saved);
     }
 
     @Override
@@ -65,4 +71,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedbackRepository.deleteById(id);
     }
 
+    private String getTenantId() {
+        // TODO: Get from authenticated user's security context (Microsoft Entra ID)
+        return "default-tenant";
+    }
 }

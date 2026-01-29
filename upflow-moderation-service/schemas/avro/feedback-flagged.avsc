@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "FeedbackFlaggedEvent",
+  "namespace": "com.abrxu.upflow.events",
+  "fields": [
+    {"name": "feedback_id", "type": "string"},
+    {"name": "reason", "type": "string"},
+    {"name": "severity", "type": {"type": "enum", "name": "Severity", "symbols": ["LOW", "MEDIUM", "HIGH"]}},
+    {"name": "tenant_id", "type": "string"},
+    {"name": "flagged_at", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

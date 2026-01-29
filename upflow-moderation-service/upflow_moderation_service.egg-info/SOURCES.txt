@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+moderation/__init__.py
+moderation/__main__.py
+moderation/config.py
+moderation/consumer.py
+moderation/models.py
+moderation/producer.py
+moderation/services/__init__.py
+moderation/services/moderator.py
+tests/test_moderator.py
+upflow_moderation_service.egg-info/PKG-INFO
+upflow_moderation_service.egg-info/SOURCES.txt
+upflow_moderation_service.egg-info/dependency_links.txt
+upflow_moderation_service.egg-info/requires.txt
+upflow_moderation_service.egg-info/top_level.txt

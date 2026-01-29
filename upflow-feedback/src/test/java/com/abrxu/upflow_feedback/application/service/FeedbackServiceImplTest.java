@@ -7,6 +7,8 @@ import com.abrxu.upflow_feedback.application.mapper.FeedbackMapper;
 import com.abrxu.upflow_feedback.application.port.out.DepartmentRepository;
 import com.abrxu.upflow_feedback.application.port.out.FeedbackRepository;
 import com.abrxu.upflow_feedback.domain.Feedback;
+import com.abrxu.upflow_feedback.domain.FeedbackStatus;
+import com.abrxu.upflow_feedback.infra.kafka.FeedbackEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +41,12 @@ class FeedbackServiceImplTest {
     @Mock
     private FeedbackMapper feedbackMapper;
 
+    @Mock
+    private FeedbackEventPublisher eventPublisher;
+
     @InjectMocks
     private FeedbackServiceImpl feedbackService;
+
 
     private UUID feedbackId;
     private UUID departmentId;
@@ -53,8 +59,8 @@ class FeedbackServiceImplTest {
         feedbackId = UUID.randomUUID();
         departmentId = UUID.randomUUID();
         createdAt = Instant.now();
-        feedback = new Feedback(feedbackId, "Great workplace!", 5, departmentId, createdAt);
-        feedbackResponse = new FeedbackResponse(feedbackId, "Great workplace!", 5, departmentId, createdAt);
+        feedback = new Feedback(feedbackId, "Great workplace!", 5, departmentId, createdAt, FeedbackStatus.PENDING, null);
+        feedbackResponse = new FeedbackResponse(feedbackId, "Great workplace!", 5, departmentId, createdAt, FeedbackStatus.PENDING, null);
     }
 
     @Test
@@ -151,5 +157,5 @@ class FeedbackServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> feedbackService.delete(feedbackId));
         verify(feedbackRepository, never()).deleteById(any());
     }
-    
+
 }

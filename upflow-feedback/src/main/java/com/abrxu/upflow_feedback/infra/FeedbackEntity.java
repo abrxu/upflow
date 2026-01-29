@@ -1,10 +1,8 @@
 package com.abrxu.upflow_feedback.infra;
 
 import com.abrxu.upflow_feedback.domain.Feedback;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.abrxu.upflow_feedback.domain.FeedbackStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +34,15 @@ public class FeedbackEntity {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private FeedbackStatus status;
+
+    @Column(columnDefinition = "TEXT")
+    private String moderatedContent;
+
     public Feedback toDomain() {
-        return new Feedback(id, message, rating, departmentId, createdAt);
+        return new Feedback(id, message, rating, departmentId, createdAt, status, moderatedContent);
     }
 
     public static FeedbackEntity fromDomain(Feedback feedback) {
@@ -46,7 +51,9 @@ public class FeedbackEntity {
                 feedback.message(),
                 feedback.rating(),
                 feedback.departmentId(),
-                feedback.createdAt()
+                feedback.createdAt(),
+                feedback.status(),
+                feedback.moderatedContent()
         );
     }
 }

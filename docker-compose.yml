@@ -1,0 +1,227 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: upflow-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-upflow_feedback}
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-upflow_feedback}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - upflow-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.3
+    container_name: upflow-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=ruok -Xmx128M -Xms128M
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper
+    healthcheck:
+      test: [CMD-SHELL, "echo ruok | nc localhost 2181 | grep imok || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - upflow-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.3
+    container_name: upflow-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: -Xmx512M -Xms256M
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: [CMD, kafka-broker-api-versions, --bootstrap-server, localhost:9092]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - upflow-network
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.3
+    container_name: upflow-schema-registry
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:29092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_OPTS: -Xmx256M -Xms256M
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - 8081:8081
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8081/subjects]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - upflow-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: upflow-kafka-ui
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: upflow
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - 8090:8080
+    networks:
+      - upflow-network
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: upflow-dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 9999:8080
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    networks:
+      - upflow-network
+
+  litellm:
+    image: litellm/litellm:latest
+    container_name: upflow-litellm
+    volumes:
+      - ./infra/litellm/config.yaml:/app/config.yaml
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-upflow-dev}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    command: [--config, /app/config.yaml, --port, "4000", --host, 0.0.0.0]
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: [CMD-SHELL, "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveness')\" || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 45s
+    networks:
+      - upflow-network
+
+  feedback-service:
+    build:
+      context: ./upflow-feedback
+    container_name: upflow-feedback-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JAVA_TOOL_OPTIONS: -Xmx512M -Xms256M
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-upflow_feedback}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      APP_ERROR_BASE_URI: ${APP_ERROR_BASE_URI:-http://localhost/api}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+    profiles:
+      - app
+    networks:
+      - upflow-network
+
+  moderation-service:
+    build:
+      context: ./
+      dockerfile: upflow-moderation-service/Dockerfile
+    container_name: upflow-moderation-service
+    depends_on:
+      litellm:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+     # Kafka
+     KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+     KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+     KAFKA_GROUP_ID: moderation-service
+     KAFKA_INPUT_TOPIC: feedback.submitted
+     KAFKA_OUTPUT_TOPIC: feedback.moderated
+     KAFKA_FLAGGED_TOPIC: feedback.flagged
+    
+     # LLM
+     LLM_BASE_URL: http://litellm:4000
+     LLM_API_KEY: ${LITELLM_MASTER_KEY:-sk-upflow-dev}
+    
+     # Logging
+     LOG_LEVEL: INFO
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+    profiles:
+      - app
+    networks:
+      - upflow-network
+
+networks:
+  upflow-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  zookeeper_data:
+  kafka_data:
